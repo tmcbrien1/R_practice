@@ -1,0 +1,41 @@
+---
+title: "Intro_R_2"
+author: "Tom McBrien"
+date: "October 14, 2015"
+output: html_document
+---
+
+
+```{r locating data}
+d <- read.csv("Dataset_S1.txt", sep = ',', header = TRUE) #reading in data, separate with comma because that's how it's delimited
+head(d) #checking data
+colnames(d)[12] <- "percent.GC" #renaming column 12 because it was uploaded with a "%" sign as column header, which R just changes to "X"
+d$diversity <- d$Pi / (10*1000) #rescale the vector "Pi" into something more useable
+d$cent <- d$start >= 25800000 & d$end <= 29700000 #Created new column called "cent" which identifies whether each row is in the centromere or not based on positions given to us by Vince Buffalo's book.
+```
+
+```{r looking at SNPs}
+d$total.SNPS >= 85 #Taking a look at which values of the vector conform to our specs
+d[d$total.SNPs >= 85, ] #This command will extract rows with greater than or equal to 85 SNPs
+snpsGT85 <- d[d$total.SNPs >= 85,] #subset data into new data frame
+```
+
+```{r subset based on columns}
+d[d$Pi > 16 & d$percent.GC > 80, c("start", "end", "depth", "Pi")] #we subset our data based on certain characteristics in the columns and only certain coluns
+```
+
+```{r summarize data after subsetting}
+summary(d$depth[d$percent.GC >= 80]) 
+summary(d$depth[d$percent.GC < 80])
+```
+
+```{r subset using subset function}
+subset(d, Pi > 16 & percent.GC > 80, c(start, end, Pi, percent.GC, depth)) #subset "d" based on the Pi iand percent.GC data values with certain columns
+```
+
+```{r installing ggplot2}
+install.packages("ggplot2") #installing ggplot2
+library(ggplot2) #important to actually call it on the machine
+```
+
+
