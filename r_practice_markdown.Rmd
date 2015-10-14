@@ -83,3 +83,16 @@ rbind(dpth_sum[[1]], dpth_sum[[2]]) #this is to put all of the values from two b
 do.call(rbind, lapply(split(d$depth, d$GC.binned), summary)) #this works when you have a large number of things to put together. do call takes all of the rows and binds them together because you said so with rbind. So, from in to out, you want to split the "d" dataframe via depth and binned, and you want to apply a summary function to both of these things, and you want to then call this on all the rows using rbind and do.call
 aggregate(d$depth, list(gc=d$GC.binned), mean) #this gets a bunch of info together. Asking for the mean of the depth column of d based on certain bins. Only problem is that it renames what you're looking for "x", so you need to do some cleanup after.
 ```
+
+```{r exporting data from R}
+write.table(snpsGT85, file="Single_nucleotide_polymorphisms.txt", quote=FALSE, sep='\t', row.names=FALSE, col.names=TRUE) #how to get a datafile out of R. first do datafile, then what you want to name it, make SURE to do quote=FALSE so that all your data don't have quotation marks around it. "sep" tells how to delimit.
+```
+
+
+
+
+
+
+
+
+
