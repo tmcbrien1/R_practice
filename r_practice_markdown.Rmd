@@ -43,7 +43,13 @@ d$position <- (d$end + d$start) / 2 #making a midpoint
 ggplot(d) + geom_point(aes(x=position, y=diversity)) #calling ggplot on dataframe and then adding a layer in which you plot via the geometric point function based on plotting diversity values by their position
 ggplot(d, aes(x=position, y=diversity)) + geom_point() #trying to clear up overplotting, not much luck
 ggplot(d) + geom_point(aes(x=position, y=diversity, color=cent)) #trying this again but now the aesthetic value includes a coloring based on the "cent" value we made before that tells us whether something is in the centromere or not
-ggplot(d) + geom_density(aes(x=diversity), fill="green") #a density plot with a filled color
+ggplot(d) + geom_density(aes(x=diversity), fill="black") #a density plot with a filled color
 ggplot(d) + geom_density(aes(x=diversity, fill=cent), alpha=0.4) #density plot showing both non-centromere and centromere datasets with their corresponding diversities. alpha=0.4 makes the graphs more transparent so you can see both
 ```
 
+```{r checking normality and increasing resolution of data by binning}
+ggplot(d) + geom_bar(aes(x=percent.GC)) #checking out normality of data
+d$GC.binned <- cut(d$percent.GC, 5) #using cut to bin the percent GC into 5 bins 
+ggplot(d) + geom_bar(aes(x=GC.binned)) #checking out our bins
+ggplot(d) + geom_density(aes(x=depth, linetype=GC.binned), alpha=0.5) #plotting data this way shows us that both the lowest and highest GC content windows have lower depth
+```
