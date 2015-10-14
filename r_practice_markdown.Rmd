@@ -5,7 +5,7 @@ date: "October 14, 2015"
 output: html_document
 ---
 
-
+##locating data##
 ```{r locating data}
 d <- read.csv("Dataset_S1.txt", sep = ',', header = TRUE) #reading in data, separate with comma because that's how it's delimited
 head(d) #checking data
@@ -13,7 +13,7 @@ colnames(d)[12] <- "percent.GC" #renaming column 12 because it was uploaded with
 d$diversity <- d$Pi / (10*1000) #rescale the vector "Pi" into something more useable
 d$cent <- d$start >= 25800000 & d$end <= 29700000 #Created new column called "cent" which identifies whether each row is in the centromere or not based on positions given to us by Vince Buffalo's book.
 ```
-
+##looking at SNPs##
 ```{r looking at SNPs}
 d$total.SNPS >= 85 #Taking a look at which values of the vector conform to our specs
 d[d$total.SNPs >= 85, ] #This command will extract rows with greater than or equal to 85 SNPs
@@ -69,4 +69,17 @@ nrow(recm) #how many rows?
 recm <- merge(mtfs, rpts, by.x="pos", by.y="pos", all.x=TRUE) #the merge statement with a left outer join, meaning you merge but including all records from the first file (the x position, or mtfs), not just the ones where they line up.
 head(recm)
 nrow(recm)
+```
+
+```{r working with split-apply-combine pattern}
+d_split <- split(d$depth, d$GC.binned) #split by depth and GC.binned
+str(d_split)
+lapply(d_split, mean) #we have a list we created using the split command. So we are taking all the numbers from this list, and applying the mean. This is a way to apply a function to data split into groups.
+unlist(lapply(d_split, mean))  #this uses unlist to make a vector out of a list, putting all those separate things back together
+sapply(d_split, mean) #this does the same thing as the function above
+dpth_sum <- lapply(split(d$depth, d$GC.binned), summary) #here is an example of looking at more values than just the mean. looking at two columns and getting a summary for both. This will be in list form.
+dpth_sum #calling it so we can look at it
+rbind(dpth_sum[[1]], dpth_sum[[2]]) #this is to put all of the values from two bins together in a dataframe, making two rows. This only works when you're combining a small number of things.
+do.call(rbind, lapply(split(d$depth, d$GC.binned), summary)) #this works when you have a large number of things to put together. do call takes all of the rows and binds them together because you said so with rbind. So, from in to out, you want to split the "d" dataframe via depth and binned, and you want to apply a summary function to both of these things, and you want to then call this on all the rows using rbind and do.call
+aggregate(d$depth, list(gc=d$GC.binned), mean) #this gets a bunch of info together. Asking for the mean of the depth column of d based on certain bins. Only problem is that it renames what you're looking for "x", so you need to do some cleanup after.
 ```
